@@ -50,14 +50,16 @@ pipeline {
         // -------------------------------------------------------
         // 2️⃣ instalación dependencias
         // -------------------------------------------------------
-        stage('Instalar dependencias Front') {
+       stage('Instalar dependencias Front') {
             steps {
                 dir("${WORKSPACE_DIR}") {
                     echo "📦 instalando dependencias..."
-                    sh 'npm ci' // ✅ más rápido y confiable que npm install en CI/CD
+                    sh 'ls -la'
+                    sh 'npm ci'
                 }
             }
         }
+
 
         // -------------------------------------------------------
         // 3️⃣ construir angular con su entorno
