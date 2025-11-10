@@ -1,20 +1,23 @@
+version: '3.8'
+
 services:
   multas-front-prod:
     container_name: multas-front-prod
     build:
-      context: ../../
+      context: ../../            # apunta al root del front
       dockerfile: Dockerfile
     env_file:
       - .env
     ports:
-      - "4202:80"
-    networks:
-      - multas_network
-    labels:
-      - com.multas.environment=prod
+      - "4202:80"                # expone el front en http://localhost:4202
     environment:
       - API_URL=${API_URL}
+    networks:
+      - multas_network
+    restart: always              # opcional: reinicia si se cae
+    labels:
+      - com.multas.environment=prod
 
 networks:
   multas_network:
-    external: true
+    external: true               # usa la red compartida del sistema (no se recrea)
