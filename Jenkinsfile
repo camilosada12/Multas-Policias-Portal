@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        WORKSPACE_DIR = '/workspace/Front'
-    }
-
     stages {
 
         // -------------------------------------------------------
@@ -35,7 +31,7 @@ pipeline {
                             break
                     }
 
-                    env.ENV_DIR = "${WORKSPACE_DIR}/environments/${env.ENVIRONMENT}"
+                    env.ENV_DIR = "environments/${env.ENVIRONMENT}"
                     env.COMPOSE_FILE = "${env.ENV_DIR}/docker-compose.yml"
                     env.ENV_FILE = "${env.ENV_DIR}/.env"
 
@@ -50,26 +46,21 @@ pipeline {
         // -------------------------------------------------------
         // 2️⃣ instalación dependencias
         // -------------------------------------------------------
-       stage('Instalar dependencias Front') {
+        stage('Instalar dependencias Front') {
             steps {
-                dir("${WORKSPACE_DIR}") {
-                    echo "📦 instalando dependencias..."
-                    sh 'ls -la'
-                    sh 'npm ci'
-                }
+                echo "📦 instalando dependencias..."
+                sh 'ls -la'
+                sh 'npm install'
             }
         }
-
 
         // -------------------------------------------------------
         // 3️⃣ construir angular con su entorno
         // -------------------------------------------------------
         stage('Construir Angular') {
             steps {
-                dir("${WORKSPACE_DIR}") {
-                    echo "⚙️ construyendo angular para entorno ${env.BUILD_ENV}..."
-                    sh "npm run build -- --configuration=${env.BUILD_ENV}"
-                }
+                echo "⚙️ construyendo angular para entorno ${env.BUILD_ENV}..."
+                sh "npm run build -- --configuration=${env.BUILD_ENV}"
             }
         }
 
@@ -80,7 +71,6 @@ pipeline {
             steps {
                 echo "🚀 levantando contenedor FRONT (${env.ENVIRONMENT})..."
                 sh """
-                    cd ${WORKSPACE_DIR}
                     docker network create multas_network || echo '🔹 red ya existe'
                     docker compose -f ${env.COMPOSE_FILE} --env-file ${env.ENV_FILE} up -d --build
                 """
