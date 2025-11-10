@@ -1,0 +1,20 @@
+services:
+  multas-front-prod:
+    container_name: multas-front-prod
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "4202:80"
+    networks:
+      - multas_network
+    labels:
+      - com.multas.environment=prod
+    environment:
+      - API_URL=${API_URL}
+
+networks:
+  multas_network:
+    external: true
